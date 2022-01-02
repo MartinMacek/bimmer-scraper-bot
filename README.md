@@ -19,13 +19,13 @@ dart run
 
 ## Compile
 
-You can also compile binnary with following commands
-#### Windows
+You can also compile binary with following commands
+#### Executable
 ```sh
 dart compile exe bin/bimmer_scraper_bot.dart 
 ```
 
-#### MacOS
+#### AOT
 
 ```sh
 dart compile aot-snapshot bin/bimmer_scraper_bot.dart 

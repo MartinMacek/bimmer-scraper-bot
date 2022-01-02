@@ -18,11 +18,13 @@ void main(List<String> arguments) async {
   var isInitialRun = true;
 
   TeleDart(telegram, event).start();
+  await webScraper.loadWebPage(searchParams);
 
   Timer.periodic(period, (Timer t) async {
     if (await webScraper.loadWebPage(searchParams)) {
-      List<Map<String, dynamic>> elements =
-          webScraper.getElement('a.sds-surface', ['href']);
+      List<Map<String, dynamic>> elements = webScraper.getElement(
+          'div.c-layout__wrapper > div.p-uw-item-list > div.c-layout__content > div > div.p-uw-item-list__list-wrapper > div.c-item-list > ul > li.c-item > div > div > div.c-item__data-wrap > a',
+          ['href']);
 
       for (dynamic element in elements) {
         final href = element["attributes"]["href"];
