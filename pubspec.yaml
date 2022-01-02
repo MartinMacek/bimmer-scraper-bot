@@ -13,4 +13,6 @@ environment:
 dev_dependencies:
   lints: ^1.0.0
 dependencies: 
+  dotenv: ^3.0.0
+  teledart: ^0.2.1
   web_scraper: ^0.1.4
