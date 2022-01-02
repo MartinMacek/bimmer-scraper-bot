@@ -17,7 +17,7 @@ void main(List<String> arguments) async {
   final tray = [];
   final telegram = Telegram(env['botToken'] as String);
   final event = Event((await telegram.getMe()).username!);
-  const period = Duration(minutes: 1);
+  const period = Duration(minutes: 3);
   final webScraper = WebScraper('https://www.sauto.cz');
   var isInitialRun = true;
 
@@ -25,11 +25,15 @@ void main(List<String> arguments) async {
 
   Future<void> loadQueries() async {
     for (dynamic query in searchQueries) {
-      if (await webScraper.loadWebPage(query)) {
-        List<Map<String, dynamic>> elements = webScraper.getElement(
-            'div.c-layout__wrapper > div.p-uw-item-list > div.c-layout__content > div > div.p-uw-item-list__list-wrapper > div.c-item-list > ul > li.c-item > div > div > div.c-item__data-wrap > a',
-            ['href']);
-        results = results + elements;
+      try {
+        if (await webScraper.loadWebPage(query)) {
+          List<Map<String, dynamic>> elements = webScraper.getElement(
+              'div.c-layout__wrapper > div.p-uw-item-list > div.c-layout__content > div > div.p-uw-item-list__list-wrapper > div.c-item-list > ul > li.c-item > div > div > div.c-item__data-wrap > a',
+              ['href']);
+          results = results + elements;
+        }
+      } catch (e) {
+        print("Oh no! Something went wrong during request");
       }
     }
   }

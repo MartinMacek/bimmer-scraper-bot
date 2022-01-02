@@ -1,15 +1,17 @@
 # BimmerBot
 
-This bot periodicaly (every minute) web scrapes car listings under specified query and sends telegram message with new listing link
+This bot periodicaly web scrapes car listings under specified query and sends telegram message with new listing link
 
 ## Features
 
-- Web scrape sauto.cz web
+- Web scrape sauto.cz website
 - Update search query params (manufacturer, model, year, price, specs...)
 - Send message to specific chat ID
 - Change query period
 
 ## Run
+Create .env file in root directory and add your bot token and caht ID.
+You can check .env.example in root.
 
 You can run this project in terminal by running:
 ```sh
