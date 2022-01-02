@@ -9,7 +9,7 @@ void main(List<String> arguments) async {
   print("bot started...");
   load();
   final searchQueries = [
-    '/inzerce/osobni/bmw?cena-do=500000&km-do=150000&typ=kombi&prevodovka=automaticka&pohon=4x4',
+    '/inzerce/osobni/bmw?cena-do=500000&vyrobeno-od=2014&km-do=150000&typ=kombi&prevodovka=automaticka&pohon=4x4',
     '/inzerce/osobni/bmw/rada-4?cena-do=500000&km-do=150000&prevodovka=automaticka&pohon=4x4',
   ];
   List<Map<String, dynamic>> results = [];
@@ -40,7 +40,11 @@ void main(List<String> arguments) async {
       final href = element["attributes"]["href"];
       if (!tray.contains(href)) {
         tray.add(href);
-        if (!isInitialRun) telegram.sendMessage(env['chatId'], href);
+        if (!isInitialRun) {
+          /// Send telegram message
+          telegram.sendMessage(env['chatId'], href);
+          print("${DateTime.now().toLocal()} New listing found");
+        }
       }
     }
 
