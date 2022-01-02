@@ -2,6 +2,10 @@
 .dart_tool/
 .packages
 .env
+*.aot
+*.exe
+
 
 # Conventional directory for build output.
 build/
+
