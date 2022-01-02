@@ -8,8 +8,12 @@ import 'package:web_scraper/web_scraper.dart';
 void main(List<String> arguments) async {
   print("bot started...");
   load();
-  final searchParams =
-      '/inzerce/osobni/bmw?cena-do=500000&km-do=150000&typ=kombi&prevodovka=automaticka&pohon=4x4';
+  final searchQueries = [
+    '/inzerce/osobni/bmw?cena-do=500000&km-do=150000&typ=kombi&prevodovka=automaticka&pohon=4x4',
+    '/inzerce/osobni/bmw/rada-4?cena-do=500000&km-do=150000&prevodovka=automaticka&pohon=4x4',
+  ];
+  List<Map<String, dynamic>> results = [];
+
   final tray = [];
   final telegram = Telegram(env['botToken'] as String);
   final event = Event((await telegram.getMe()).username!);
@@ -18,22 +22,28 @@ void main(List<String> arguments) async {
   var isInitialRun = true;
 
   TeleDart(telegram, event).start();
-  await webScraper.loadWebPage(searchParams);
 
-  Timer.periodic(period, (Timer t) async {
-    if (await webScraper.loadWebPage(searchParams)) {
-      List<Map<String, dynamic>> elements = webScraper.getElement(
-          'div.c-layout__wrapper > div.p-uw-item-list > div.c-layout__content > div > div.p-uw-item-list__list-wrapper > div.c-item-list > ul > li.c-item > div > div > div.c-item__data-wrap > a',
-          ['href']);
-
-      for (dynamic element in elements) {
-        final href = element["attributes"]["href"];
-        if (!tray.contains(href)) {
-          tray.add(href);
-          if (!isInitialRun) telegram.sendMessage(env['chatId'], href);
-        }
+  Future<void> loadQueries() async {
+    for (dynamic query in searchQueries) {
+      if (await webScraper.loadWebPage(query)) {
+        List<Map<String, dynamic>> elements = webScraper.getElement(
+            'div.c-layout__wrapper > div.p-uw-item-list > div.c-layout__content > div > div.p-uw-item-list__list-wrapper > div.c-item-list > ul > li.c-item > div > div > div.c-item__data-wrap > a',
+            ['href']);
+        results = results + elements;
       }
     }
+  }
+
+  Timer.periodic(period, (Timer t) async {
+    await loadQueries();
+    for (dynamic element in results) {
+      final href = element["attributes"]["href"];
+      if (!tray.contains(href)) {
+        tray.add(href);
+        if (!isInitialRun) telegram.sendMessage(env['chatId'], href);
+      }
+    }
+
     isInitialRun = false;
   });
 }
